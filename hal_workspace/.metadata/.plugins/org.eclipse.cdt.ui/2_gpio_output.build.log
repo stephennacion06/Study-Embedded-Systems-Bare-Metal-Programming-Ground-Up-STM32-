@@ -1,0 +1,17 @@
+18:09:36 **** Incremental Build of configuration Debug for project 2_gpio_output ****
+make -j16 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DSTM32G071RBTx -DSTM32 -DSTM32G0 -DSTM32G071xx -c -I../Inc -I"C:/DEV/Atacama/590/Study-Embedded-Systems-Bare-Metal-Programming-Ground-Up-STM32-/hal_workspace/chip_headers/CMSIS/Device/ST/STM32G0xx/Include" -I"C:/DEV/Atacama/590/Study-Embedded-Systems-Bare-Metal-Programming-Ground-Up-STM32-/hal_workspace/chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "2_gpio_output.elf" @"objects.list"   -mcpu=cortex-m0plus -T"C:\DEV\Atacama\590\Study-Embedded-Systems-Bare-Metal-Programming-Ground-Up-STM32-\hal_workspace\2_gpio_output\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="2_gpio_output.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 2_gpio_output.elf
+ 
+arm-none-eabi-size   2_gpio_output.elf 
+arm-none-eabi-objdump -h -S  2_gpio_output.elf  > "2_gpio_output.list"
+   text	   data	    bss	    dec	    hex	filename
+    584	      8	   1568	   2160	    870	2_gpio_output.elf
+Finished building: default.size.stdout
+ 
+Finished building: 2_gpio_output.list
+ 
+
+18:09:37 Build Finished. 0 errors, 0 warnings. (took 422ms)
+

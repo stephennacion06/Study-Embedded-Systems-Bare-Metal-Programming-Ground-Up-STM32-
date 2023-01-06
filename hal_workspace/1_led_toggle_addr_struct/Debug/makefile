@@ -59,8 +59,8 @@ all: main-build
 main-build: 1_led_toggle_addr_struct.elf secondary-outputs
 
 # Tool invocations
-1_led_toggle_addr_struct.elf 1_led_toggle_addr_struct.map: $(OBJS) $(USER_OBJS) C:\DEV\Atacama\590\hal_workspace\1_led_toggle_addr_struct\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "1_led_toggle_addr_struct.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\DEV\Atacama\590\hal_workspace\1_led_toggle_addr_struct\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="1_led_toggle_addr_struct.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+1_led_toggle_addr_struct.elf 1_led_toggle_addr_struct.map: $(OBJS) $(USER_OBJS) C:\DEV\Atacama\590\Study-Embedded-Systems-Bare-Metal-Programming-Ground-Up-STM32-\hal_workspace\1_led_toggle_addr_struct\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "1_led_toggle_addr_struct.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\DEV\Atacama\590\Study-Embedded-Systems-Bare-Metal-Programming-Ground-Up-STM32-\hal_workspace\1_led_toggle_addr_struct\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="1_led_toggle_addr_struct.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -83,26 +83,15 @@ Disassembly of section .text:
  8000104:	0800020c 	.word	0x0800020c
 
 08000108 <main>:
-
-#define RCC 				((RCC_TypeDef*)   RCC_BASE)
-#define GPIOA 				((GPIO_TypeDef*)  GPIOA_BASE)
-
-int main(void)
-{
  8000108:	b580      	push	{r7, lr}
  800010a:	b082      	sub	sp, #8
  800010c:	af00      	add	r7, sp, #0
-	/*1. Enable Clock Access to GPIOA by using OR operator*/
-	RCC->RCC_IOPEN_R |=  GPIOAEN;
  800010e:	4b15      	ldr	r3, [pc, #84]	; (8000164 <main+0x5c>)
  8000110:	6b5a      	ldr	r2, [r3, #52]	; 0x34
  8000112:	4b14      	ldr	r3, [pc, #80]	; (8000164 <main+0x5c>)
  8000114:	2101      	movs	r1, #1
  8000116:	430a      	orrs	r2, r1
  8000118:	635a      	str	r2, [r3, #52]	; 0x34
-
-	/*2. Set PA5 as output pin*/
-	GPIOA->MODER |= (1U<<10); // Set bit 10 to 1
  800011a:	23a0      	movs	r3, #160	; 0xa0
  800011c:	05db      	lsls	r3, r3, #23
  800011e:	681a      	ldr	r2, [r3, #0]
@@ -112,7 +101,6 @@ int main(void)
  8000126:	00c9      	lsls	r1, r1, #3
  8000128:	430a      	orrs	r2, r1
  800012a:	601a      	str	r2, [r3, #0]
-	GPIOA->MODER &=~(1U<<11); // Set bit 11 to 0
  800012c:	23a0      	movs	r3, #160	; 0xa0
  800012e:	05db      	lsls	r3, r3, #23
  8000130:	681a      	ldr	r2, [r3, #0]
@@ -121,12 +109,6 @@ int main(void)
  8000136:	490c      	ldr	r1, [pc, #48]	; (8000168 <main+0x60>)
  8000138:	400a      	ands	r2, r1
  800013a:	601a      	str	r2, [r3, #0]
-	{
-		/*3. Set PA5 high*/
-		// GPIOA_OD_R |= LED_PIN;
-
-		/*4:Experiment 2 : toggle PA5*/
-		GPIOA->ODR^= LED_PIN;
  800013c:	23a0      	movs	r3, #160	; 0xa0
  800013e:	05db      	lsls	r3, r3, #23
  8000140:	695a      	ldr	r2, [r3, #20]
@@ -135,7 +117,6 @@ int main(void)
  8000146:	2120      	movs	r1, #32
  8000148:	404a      	eors	r2, r1
  800014a:	615a      	str	r2, [r3, #20]
-		for (int i=0; i<100000;i++){}
  800014c:	2300      	movs	r3, #0
  800014e:	607b      	str	r3, [r7, #4]
  8000150:	e002      	b.n	8000158 <main+0x50>
@@ -146,7 +127,6 @@ int main(void)
  800015a:	4a04      	ldr	r2, [pc, #16]	; (800016c <main+0x64>)
  800015c:	4293      	cmp	r3, r2
  800015e:	ddf8      	ble.n	8000152 <main+0x4a>
-		GPIOA->ODR^= LED_PIN;
  8000160:	e7ec      	b.n	800013c <main+0x34>
  8000162:	46c0      	nop			; (mov r8, r8)
  8000164:	40021000 	.word	0x40021000
@@ -154,110 +134,50 @@ int main(void)
  800016c:	0001869f 	.word	0x0001869f
 
 08000170 <Reset_Handler>:
-
-  .section .text.Reset_Handler
-  .weak Reset_Handler
-  .type Reset_Handler, %function
-Reset_Handler:
-  ldr   r0, =_estack
  8000170:	480d      	ldr	r0, [pc, #52]	; (80001a8 <LoopForever+0x2>)
-  mov   sp, r0          /* set stack pointer */
  8000172:	4685      	mov	sp, r0
-/* Call the clock system initialization function.*/
-  bl  SystemInit
  8000174:	e000      	b.n	8000178 <Reset_Handler+0x8>
  8000176:	bf00      	nop
-
-/* Copy the data segment initializers from flash to SRAM */
-  ldr r0, =_sdata
  8000178:	480c      	ldr	r0, [pc, #48]	; (80001ac <LoopForever+0x6>)
-  ldr r1, =_edata
  800017a:	490d      	ldr	r1, [pc, #52]	; (80001b0 <LoopForever+0xa>)
-  ldr r2, =_sidata
  800017c:	4a0d      	ldr	r2, [pc, #52]	; (80001b4 <LoopForever+0xe>)
-  movs r3, #0
  800017e:	2300      	movs	r3, #0
-  b LoopCopyDataInit
  8000180:	e002      	b.n	8000188 <LoopCopyDataInit>
 
 08000182 <CopyDataInit>:
-
-CopyDataInit:
-  ldr r4, [r2, r3]
  8000182:	58d4      	ldr	r4, [r2, r3]
-  str r4, [r0, r3]
  8000184:	50c4      	str	r4, [r0, r3]
-  adds r3, r3, #4
  8000186:	3304      	adds	r3, #4
 
 08000188 <LoopCopyDataInit>:
-
-LoopCopyDataInit:
-  adds r4, r0, r3
  8000188:	18c4      	adds	r4, r0, r3
-  cmp r4, r1
  800018a:	428c      	cmp	r4, r1
-  bcc CopyDataInit
  800018c:	d3f9      	bcc.n	8000182 <CopyDataInit>
-
-/* Zero fill the bss segment. */
-  ldr r2, =_sbss
  800018e:	4a0a      	ldr	r2, [pc, #40]	; (80001b8 <LoopForever+0x12>)
-  ldr r4, =_ebss
  8000190:	4c0a      	ldr	r4, [pc, #40]	; (80001bc <LoopForever+0x16>)
-  movs r3, #0
  8000192:	2300      	movs	r3, #0
-  b LoopFillZerobss
  8000194:	e001      	b.n	800019a <LoopFillZerobss>
 
 08000196 <FillZerobss>:
-
-FillZerobss:
-  str  r3, [r2]
  8000196:	6013      	str	r3, [r2, #0]
-  adds r2, r2, #4
  8000198:	3204      	adds	r2, #4
 
 0800019a <LoopFillZerobss>:
-
-LoopFillZerobss:
-  cmp r2, r4
  800019a:	42a2      	cmp	r2, r4
-  bcc FillZerobss
  800019c:	d3fb      	bcc.n	8000196 <FillZerobss>
-
-/* Call static constructors */
-  bl __libc_init_array
  800019e:	f000 f811 	bl	80001c4 <__libc_init_array>
-/* Call the application's entry point.*/
-  bl main
  80001a2:	f7ff ffb1 	bl	8000108 <main>
 
 080001a6 <LoopForever>:
-
-LoopForever:
-    b LoopForever
  80001a6:	e7fe      	b.n	80001a6 <LoopForever>
-  ldr   r0, =_estack
  80001a8:	20009000 	.word	0x20009000
-  ldr r0, =_sdata
  80001ac:	20000000 	.word	0x20000000
-  ldr r1, =_edata
  80001b0:	20000000 	.word	0x20000000
-  ldr r2, =_sidata
  80001b4:	0800022c 	.word	0x0800022c
-  ldr r2, =_sbss
  80001b8:	20000000 	.word	0x20000000
-  ldr r4, =_ebss
  80001bc:	2000001c 	.word	0x2000001c
 
 080001c0 <ADC_COMP_IRQHandler>:
- * @retval : None
-*/
-  .section .text.Default_Handler,"ax",%progbits
-Default_Handler:
-Infinite_Loop:
-  b Infinite_Loop
  80001c0:	e7fe      	b.n	80001c0 <ADC_COMP_IRQHandler>
 	...
 
